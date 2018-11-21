@@ -14,3 +14,9 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/hierarchy', 'HierarchyController@index')->name('hierarchy');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
