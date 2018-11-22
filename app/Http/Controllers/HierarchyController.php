@@ -13,4 +13,11 @@ class HierarchyController extends Controller
 
         return view('hierarchy')->with('president', $president);
     }
+
+    public function getSuccessors(Request $request)
+    {
+        $successors = Employee::where('parent', $request->id)->get()->toArray();
+
+        return json_encode($successors);
+    }
 }

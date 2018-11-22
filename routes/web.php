@@ -16,6 +16,7 @@ Route::get('/', function () {
 });
 
 Route::get('/hierarchy', 'HierarchyController@index')->name('hierarchy');
+Route::post('/hierarchy', 'HierarchyController@getSuccessors')->name('add_level');
 
 Auth::routes();
 
