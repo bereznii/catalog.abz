@@ -22,4 +22,5 @@ Auth::routes();
 
 Route::get('/employees_list', 'EmployeesListController@index')->name('employees_list');
 Route::post('/list_sort', 'EmployeesListController@getSortedList')->name('list_sort');
+
 Route::get('/home', 'HomeController@index')->name('home');
