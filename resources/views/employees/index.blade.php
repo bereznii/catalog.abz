@@ -5,13 +5,21 @@
 <div class="container col-md-12">
     <form method='post' action='{{route("list_sort")}}'>
         @csrf
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Search" aria-label="Search" id="query" name="search">
-            <div class="input-group-append">
-                <button class="btn btn-outline-secondary" id="search_btn" type="button">Поиск</button>
+        <div class="input-group add-on">
+            <input class="form-control" placeholder="Search" id="query" name="search" type="text">
+            <div class="input-group-btn">
+                <button class="btn btn-default" id="search_btn" type="button" type="submit"><i class="glyphicon glyphicon-search"></i></button>
             </div>
         </div>
     </form>
+    <div class="container col-md-12">
+        <div class="col-md-10">
+            <h2>Управление сотрудниками<h2>
+        </div>
+        <div class="bar-button col-md-2">
+            <a href="{{ route('employees.create') }}" class="btn btn-success"><i class="fas fa-plus"></i>Добавить сотрудника</a>					
+        </div>
+    </div>
     <table class="table table-hover" id='employee_table'>
         <thead>
             <tr>
@@ -31,7 +39,21 @@
                 <td>{{$employee->position}}</td>
                 <td>{{$employee->salary}}</td>
                 <td>{{$employee->employment}}</td>
-                <td></td>
+                <td>
+                    <a href="{{ route('employees.show', ['id' => $employee->id]) }}" 
+                       title="Просмотреть">
+                            <i class="fas fa-user"></i>
+                    </a>
+                    <a href="{{ route('employees.edit', ['id' => $employee->id]) }}"
+                       title="Редактировать">
+                            <i class="fas fa-edit"></i>
+                    </a>
+                    <form action="{{ url('/employees', ['id' => $employee->id]) }}" id="destroy_form{{$employee->id}}" method="post" style="display: inline;">
+                        @method('DELETE')
+                        @csrf
+                        <a href="javascript:document.getElementById('destroy_form{{$employee->id}}').submit();"><i class="fas fa-trash"></i></a>
+                    </form>
+                </td>
             </tr>
             @endforeach
         </tbody>
@@ -67,7 +89,10 @@
                     var arr = JSON.parse(data);
                     $('tbody').empty();
                     for (index = 0; index < arr.length; ++index) {
-                        $('tbody').append('<tr><td>'+arr[index].id+'</td><td>'+arr[index].name+'</td><td>'+arr[index].position+'</td><td>'+arr[index].salary+'</td><td>'+arr[index].employment+'</td><td></td></tr>');
+                        var show_link = "/employees/"+arr[index].id;
+                        var edit_link = "/employees/"+arr[index].id+"/edit";
+                        var destroy_link = `<form action='/employees/`+arr[index].id+`' id="destroy_form`+arr[index].id+`" method="post" style="display: inline;">@method('DELETE')@csrf<a href=javascript:document.getElementById("destroy_form`+arr[index].id+`").submit();><i class="fas fa-trash"></i></a></form>`;
+                        $('tbody').append('<tr><td>'+arr[index].id+'</td><td>'+arr[index].name+'</td><td>'+arr[index].position+'</td><td>'+arr[index].salary+'</td><td>'+arr[index].employment+'</td><td><a href='+show_link+'    title="Просмотреть"><i class="fas fa-user"></i></a><a href="'+edit_link+'" title="Редактировать"><i class="fas fa-edit"></i></a>'+destroy_link+'</td></tr>');
                     }
                     $('#'+column_name).removeAttr('data-order');
                     $('#'+column_name).attr('data-order', new_order);
@@ -90,7 +115,10 @@
                     var arr = JSON.parse(data);
                     $('tbody').empty();
                     for (index = 0; index < arr.length; ++index) {
-                        $('tbody').append('<tr><td>'+arr[index].id+'</td><td>'+arr[index].name+'</td><td>'+arr[index].position+'</td><td>'+arr[index].salary+'</td><td>'+arr[index].employment+'</td><td></td></tr>');
+                        var show_link = "/employees/"+arr[index].id;
+                        var edit_link = "/employees/"+arr[index].id+"/edit";
+                        var destroy_link = `<form action='/employees/`+arr[index].id+`' id="destroy_form`+arr[index].id+`" method="post" style="display: inline;">@method('DELETE')@csrf<a href=javascript:document.getElementById("destroy_form`+arr[index].id+`").submit();><i class="fas fa-trash"></i></a></form>`;
+                        $('tbody').append('<tr><td>'+arr[index].id+'</td><td>'+arr[index].name+'</td><td>'+arr[index].position+'</td><td>'+arr[index].salary+'</td><td>'+arr[index].employment+'</td><td><a href='+show_link+'    title="Просмотреть"><i class="fas fa-user"></i></a><a href="'+edit_link+'" title="Редактировать"><i class="fas fa-edit"></i></a>'+destroy_link+'</td></tr>');
                     }
                 }
             })

@@ -19,6 +19,7 @@ class CreateEmployeesTable extends Migration
             $table->string('position', 100);
             $table->integer('salary');
             $table->date('employment');
+            $table->string('photo', 255)->nullable();
             $table->integer('parent')->nullable();
             $table->integer('depth')->nullable();
             $table->timestamps();

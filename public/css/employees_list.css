@@ -1,0 +1,19 @@
+.fa-user  {
+    color: #428bca;
+}
+
+.fa-edit {
+    color: #5cb85c;
+}
+
+.fa-trash {
+    color: #d9534f;
+}
+
+div.bar-button {
+    margin-top: 20px;
+}
+
+#navbarSupportedContent {
+    display: flex!important;
+}
