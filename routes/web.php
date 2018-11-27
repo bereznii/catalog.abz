@@ -20,8 +20,8 @@ Route::post('/hierarchy', 'HierarchyController@getSuccessors')->name('add_level'
 
 Auth::routes();
 
-//Route::get('/employees_list', 'EmployeesListController@index')->middleware('auth')->name('employees_list');
 Route::post('/list_sort', 'EmployeesCRUDController@getSortedList')->middleware('auth')->name('list_sort');
+Route::post('/get_supervisor', 'EmployeesCRUDController@getSupervisor')->middleware('auth')->name('get_supervisor');
 
 Route::resource('employees', 'EmployeesCRUDController')->middleware('auth');
 

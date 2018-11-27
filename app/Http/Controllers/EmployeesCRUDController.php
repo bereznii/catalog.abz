@@ -37,7 +37,20 @@ class EmployeesCRUDController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request);
+        $positions = ['President', 'First level', 'Second level', 'Third level', 'Fourth level'];
+
+        $employee = new Employee;
+        $employee->name = $request->name;
+        $employee->position = $positions[$request->position];
+        $employee->salary = $request->salary;
+        $employee->parent = $request->supervisor;
+        $employee->depth = $request->position;
+        $employee->employment = $request->employment;
+        $employee->save();
+
+        $employee = Employee::orderBy('id', 'desc')->get()->first();
+
+        return view('employees.read', compact('employee'));
     }
 
     /**
@@ -49,8 +62,9 @@ class EmployeesCRUDController extends Controller
     public function show($id)
     {
         $employee = Employee::find($id);
+        $supervisor = Employee::find($employee->parent)->select('name')->get();
 
-        return view('employees.read', compact('employee'));
+        return view('employees.read', compact('employee', 'supervisor'));
     }
 
     /**
@@ -62,8 +76,9 @@ class EmployeesCRUDController extends Controller
     public function edit($id)
     {
         $employee = Employee::find($id);
-
-        return view('employees.edit', compact('employee'));
+        $supervisors = Employee::where('depth', $employee->depth - 1)->select('name', 'id')->get();
+        
+        return view('employees.edit', compact('employee', 'supervisors'));
     }
 
     /**
@@ -75,7 +90,20 @@ class EmployeesCRUDController extends Controller
      */
     public function update(Request $request, $id)
     {
-        dd($request);
+        $positions = ['President', 'First level', 'Second level', 'Third level', 'Fourth level'];
+
+        $employee = Employee::find($id);
+
+        $employee->name = $request->name;
+        $employee->position = $positions[$request->position];
+        $employee->salary = $request->salary;
+        $employee->employment = $request->employment;
+        $employee->parent = $request->supervisor;
+        $employee->depth = $request->position;
+
+        $employee->save();
+
+        return redirect('employees');
     }
 
     /**
@@ -86,7 +114,9 @@ class EmployeesCRUDController extends Controller
      */
     public function destroy($id)
     {
-        dd($id . 'destroy');
+        $employee = Employee::find($id);
+        $employee->delete();
+        return redirect('employees');
     }
 
     /**
@@ -124,5 +154,21 @@ class EmployeesCRUDController extends Controller
                                 ->orWhere('salary', 'LIKE', '%'.$query.'%')->orderBy($column_name, $order)->limit(30)->get()->toArray();
 
         return json_encode($employees);
+    }
+
+    /**
+     * Return the list of supervisor according to the chosen position.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function getSupervisor(Request $request) {
+
+        if($request->selected_position != 0) {
+            $supervisors = Employee::where('depth', $request->selected_position - 1)->get()->toArray();
+            return json_encode($supervisors);
+        } else {
+            return false;
+        }
+        
     }
 }

@@ -27,12 +27,12 @@
                     <tr>
                         <td>Должность:</td>
                         <td>
-                            <select class="form-control" name="position" required>
-                                <option value="President" @if($employee->position == 'President') selected @endif>President</option>
-                                <option value="First level" @if($employee->position == 'First level') selected @endif>First level</option>
-                                <option value="Second level" @if($employee->position == 'Second level') selected @endif>Second level</option>
-                                <option value="Third level" @if($employee->position == 'Third level') selected @endif>Third level</option>
-                                <option value="Fourth level" @if($employee->position == 'Fourth level') selected @endif>Fourth level</option>
+                            <select class="form-control" name="position" id="position_select" required>
+                                <option value="0" @if($employee->position == 'President') selected @endif>President</option>
+                                <option value="1" @if($employee->position == 'First level') selected @endif>First level</option>
+                                <option value="2" @if($employee->position == 'Second level') selected @endif>Second level</option>
+                                <option value="3" @if($employee->position == 'Third level') selected @endif>Third level</option>
+                                <option value="4" @if($employee->position == 'Fourth level') selected @endif>Fourth level</option>
                             </select>
                         </td>
                     </tr>
@@ -43,6 +43,20 @@
                     <tr>
                         <td>Дата приёма на работу:</td>
                         <td><input class="form-control" type="date" name="employment" value="{{$employee->employment}}" required></td>
+                    </tr>
+                    <tr>
+                        <td>Начальник:</td>
+                        <td>
+                            <select class="form-control" name="supervisor" id="supervisor_select" required>
+                                @if($employee->depth == '0')
+                                    <option value="0">-</option>
+                                @else
+                                    @foreach($supervisors as $supervisor)
+                                    <option value="{{$supervisor->id}}" @if($supervisor->id == $employee->parent) selected @endif>{{$supervisor->name}}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        </td>
                     </tr>
                     <tr>
                         <td></td>
@@ -63,5 +77,29 @@
         </div>
     </div>
 </div>
-
+<script>
+$(document).ready(function(){
+    $( "#position_select" ).change(function() {
+        var selected_position = $(this).val();
+        $.ajax({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            url: '{{route("get_supervisor")}}',
+            method: 'POST',
+            data: {selected_position:selected_position},
+            success: function (data) {
+                var arr = JSON.parse(data);
+                $('#supervisor_select').empty();
+                for (index = 0; index < arr.length; ++index) {
+                    if('{{$employee->position}}' == arr[index].position) var str = 'selected';
+                    $('#supervisor_select').append('<option value="'+arr[index].id+'" '+str+'>'+arr[index].name+'</option>');
+                }
+            },
+            error: function (data) {
+                $('#supervisor_select').empty();
+                $('#supervisor_select').append('<option value="0">-</option>');  
+            }
+        })
+    });
+});
+</script>
 @endsection

@@ -33,6 +33,10 @@
                         <td>Дата приёма на работу:</td>
                         <td>{{$employee->employment}}</td>
                     </tr>
+                    <tr>
+                        <td>Начальник:</td>
+                        <td>@if(isset($supervisor)){{$supervisor->name}}@else - @endif</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
