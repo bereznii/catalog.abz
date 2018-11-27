@@ -29,6 +29,7 @@
                 <th><a class='column-sort' id='salary' data-order='asc' href='#'>Заработная плата</a></th>
                 <th><a class='column-sort' id='employment' data-order='asc' href='#'>Дата приёма на работу</a></th>
                 <th>Действие</th>
+                <th>Фото</th>
             </tr>
         </thead>
         <tbody>
@@ -54,6 +55,7 @@
                         <a href="javascript:document.getElementById('destroy_form{{$employee->id}}').submit();"><i class="fas fa-trash"></i></a>
                     </form>
                 </td>
+                <td>@if(isset($employee->photo))<img class="list_photo" src='/storage/{{$employee->photo}}' title="Фото сотрудника"></br>@endif</td>
             </tr>
             @endforeach
         </tbody>
@@ -68,7 +70,7 @@
             var order = $(this).attr('data-order');  
             var arrow = ''; 
             
-            $('i').remove();
+            $('i.fas').remove();
 
             if(order == 'desc') {
                 arrow = '<i class="fas fa-long-arrow-alt-up" id="arrow'+column_name+'"></i>';
@@ -92,7 +94,14 @@
                         var show_link = "/employees/"+arr[index].id;
                         var edit_link = "/employees/"+arr[index].id+"/edit";
                         var destroy_link = `<form action='/employees/`+arr[index].id+`' id="destroy_form`+arr[index].id+`" method="post" style="display: inline;">@method('DELETE')@csrf<a href=javascript:document.getElementById("destroy_form`+arr[index].id+`").submit();><i class="fas fa-trash"></i></a></form>`;
-                        $('tbody').append('<tr><td>'+arr[index].id+'</td><td>'+arr[index].name+'</td><td>'+arr[index].position+'</td><td>'+arr[index].salary+'</td><td>'+arr[index].employment+'</td><td><a href='+show_link+'    title="Просмотреть"><i class="fas fa-user"></i></a><a href="'+edit_link+'" title="Редактировать"><i class="fas fa-edit"></i></a>'+destroy_link+'</td></tr>');
+                        
+                        if(!arr[index].photo) {
+                            var photo_link = '';
+                        } else {
+                            var photo_link = `<img class="list_photo" src='/storage/`+arr[index].photo+`' title="Фото сотрудника"></br>`;
+                        }
+                        
+                        $('tbody').append('<tr><td>'+arr[index].id+'</td><td>'+arr[index].name+'</td><td>'+arr[index].position+'</td><td>'+arr[index].salary+'</td><td>'+arr[index].employment+'</td><td><a href='+show_link+'    title="Просмотреть"><i class="fas fa-user"></i></a><a href="'+edit_link+'" title="Редактировать"><i class="fas fa-edit"></i></a>'+destroy_link+'</td><td>'+photo_link+'</td></tr>');
                     }
                     $('#'+column_name).removeAttr('data-order');
                     $('#'+column_name).attr('data-order', new_order);
@@ -103,7 +112,7 @@
         //Searching
         $(document).on('click', '#search_btn', function(){
             var query = $('#query').val();
-            $('i').remove();
+            $('i.fas').remove();
 
             $.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
@@ -118,7 +127,14 @@
                         var show_link = "/employees/"+arr[index].id;
                         var edit_link = "/employees/"+arr[index].id+"/edit";
                         var destroy_link = `<form action='/employees/`+arr[index].id+`' id="destroy_form`+arr[index].id+`" method="post" style="display: inline;">@method('DELETE')@csrf<a href=javascript:document.getElementById("destroy_form`+arr[index].id+`").submit();><i class="fas fa-trash"></i></a></form>`;
-                        $('tbody').append('<tr><td>'+arr[index].id+'</td><td>'+arr[index].name+'</td><td>'+arr[index].position+'</td><td>'+arr[index].salary+'</td><td>'+arr[index].employment+'</td><td><a href='+show_link+'    title="Просмотреть"><i class="fas fa-user"></i></a><a href="'+edit_link+'" title="Редактировать"><i class="fas fa-edit"></i></a>'+destroy_link+'</td></tr>');
+                        
+                        if(!arr[index].photo) {
+                            var photo_link = '';
+                        } else {
+                            var photo_link = `<img class="list_photo" src='/storage/`+arr[index].photo+`' title="Фото сотрудника"></br>`;
+                        }
+                        
+                        $('tbody').append('<tr><td>'+arr[index].id+'</td><td>'+arr[index].name+'</td><td>'+arr[index].position+'</td><td>'+arr[index].salary+'</td><td>'+arr[index].employment+'</td><td><a href='+show_link+'    title="Просмотреть"><i class="fas fa-user"></i></a><a href="'+edit_link+'" title="Редактировать"><i class="fas fa-edit"></i></a>'+destroy_link+'</td><td>'+photo_link+'</td></tr>');
                     }
                 }
             })

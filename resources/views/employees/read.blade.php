@@ -46,8 +46,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">Фото сотрудника</div>
         <div class="panel-body">
-            <img src="" title="Фото сотрудника"></br>
-            <input type="file" class="form-control-file" name="photo" id="employee_photo">
+            @if(isset($employee->photo))<img src='{{$photo_path}}' title="Фото сотрудника"></br>@endif
         </div>
     </div>
 </div>

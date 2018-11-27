@@ -17,3 +17,8 @@ div.bar-button {
 #navbarSupportedContent {
     display: flex!important;
 }
+
+img.list_photo {
+    max-width: 1.5em;
+    margin:0;
+}

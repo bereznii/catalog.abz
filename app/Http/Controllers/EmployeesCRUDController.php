@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Employee;
 
 class EmployeesCRUDController extends Controller
@@ -40,17 +41,26 @@ class EmployeesCRUDController extends Controller
         $positions = ['President', 'First level', 'Second level', 'Third level', 'Fourth level'];
 
         $employee = new Employee;
+
+        if($request->file('photo')) {
+            Storage::delete($employee->photo);
+        }
+
         $employee->name = $request->name;
         $employee->position = $positions[$request->position];
         $employee->salary = $request->salary;
+        $employee->employment = $request->employment;
+        $employee->photo = $request->photo->store('photos');
         $employee->parent = $request->supervisor;
         $employee->depth = $request->position;
-        $employee->employment = $request->employment;
+        
         $employee->save();
 
         $employee = Employee::orderBy('id', 'desc')->get()->first();
-
-        return view('employees.read', compact('employee'));
+        $supervisor = Employee::where('id', $employee->parent)->select('name')->first();
+        $photo_path = Storage::url($employee->photo);
+        
+        return view('employees.read', compact('employee', 'supervisor', 'photo_path'));
     }
 
     /**
@@ -62,9 +72,10 @@ class EmployeesCRUDController extends Controller
     public function show($id)
     {
         $employee = Employee::find($id);
-        $supervisor = Employee::find($employee->parent)->select('name')->get();
+        $supervisor = Employee::where('id', $employee->parent)->select('name')->first();
+        $photo_path = Storage::url($employee->photo);
 
-        return view('employees.read', compact('employee', 'supervisor'));
+        return view('employees.read', compact('employee', 'supervisor', 'photo_path'));
     }
 
     /**
@@ -77,8 +88,9 @@ class EmployeesCRUDController extends Controller
     {
         $employee = Employee::find($id);
         $supervisors = Employee::where('depth', $employee->depth - 1)->select('name', 'id')->get();
-        
-        return view('employees.edit', compact('employee', 'supervisors'));
+        $photo_path = Storage::url($employee->photo);
+
+        return view('employees.edit', compact('employee', 'supervisors', 'photo_path'));
     }
 
     /**
@@ -94,10 +106,15 @@ class EmployeesCRUDController extends Controller
 
         $employee = Employee::find($id);
 
+        if($request->file('photo')) {
+            Storage::delete($employee->photo);
+        }
+
         $employee->name = $request->name;
         $employee->position = $positions[$request->position];
         $employee->salary = $request->salary;
         $employee->employment = $request->employment;
+        $employee->photo = $request->photo->store('photos');
         $employee->parent = $request->supervisor;
         $employee->depth = $request->position;
 
