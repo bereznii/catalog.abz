@@ -69,6 +69,7 @@
                 <div class="top-right links">
                     <a href="{{ route('hierarchy') }}">Иерархия сотрудников</a>
                     @auth
+                        <a href="{{ route('employees.index') }}">Список сотрудников</a>
                         <a href="{{ url('/home') }}">Home</a>
                     @else
                         <a href="{{ route('login') }}">Login</a>

@@ -38,19 +38,27 @@ class EmployeesCRUDController extends Controller
      */
     public function store(Request $request)
     {
+        //validate name, photo, salary and employment date
+        $validatedData = $request->validate([
+            'name' => 'bail|required|alpha|max:100',
+            'employment' => 'bail|required|date_format:"Y-m-d"',
+            'salary' => 'bail|required|integer|numeric',
+            'photo' => 'bail|required|max:1024',
+        ]);
+
         $positions = ['President', 'First level', 'Second level', 'Third level', 'Fourth level'];
 
         $employee = new Employee;
-
-        if($request->file('photo')) {
-            Storage::delete($employee->photo);
-        }
 
         $employee->name = $request->name;
         $employee->position = $positions[$request->position];
         $employee->salary = $request->salary;
         $employee->employment = $request->employment;
-        $employee->photo = $request->photo->store('photos');
+
+        if($request->photo) {
+            $employee->photo = $request->photo->store('photos');
+        }
+        
         $employee->parent = $request->supervisor;
         $employee->depth = $request->position;
         
@@ -102,6 +110,14 @@ class EmployeesCRUDController extends Controller
      */
     public function update(Request $request, $id)
     {
+        //validate name, photo, salary and employment date
+        $validatedData = $request->validate([
+            'name' => 'bail|required|alpha|max:100',
+            'employment' => 'bail|required|date_format:"Y-m-d"',
+            'salary' => 'bail|required|integer|numeric',
+            'photo' => 'bail|required|max:1024',
+        ]);
+
         $positions = ['President', 'First level', 'Second level', 'Third level', 'Fourth level'];
 
         $employee = Employee::find($id);
@@ -114,7 +130,11 @@ class EmployeesCRUDController extends Controller
         $employee->position = $positions[$request->position];
         $employee->salary = $request->salary;
         $employee->employment = $request->employment;
-        $employee->photo = $request->photo->store('photos');
+
+        if($request->photo) {
+            $employee->photo = $request->photo->store('photos');
+        }
+
         $employee->parent = $request->supervisor;
         $employee->depth = $request->position;
 
