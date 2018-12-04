@@ -6,7 +6,15 @@
         <div class="panel panel-default">
             <div class="panel-heading">Информация о сотруднике</div>
             <div class="panel-body">
-                
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 @method('PUT')
                 @csrf
                 <table class="table table-hover">

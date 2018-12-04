@@ -40,10 +40,10 @@ class EmployeesCRUDController extends Controller
     {
         //validate name, photo, salary and employment date
         $validatedData = $request->validate([
-            'name' => 'bail|required|alpha|max:100',
+            'name' => 'bail|required|max:100',
             'employment' => 'bail|required|date_format:"Y-m-d"',
             'salary' => 'bail|required|integer|numeric',
-            'photo' => 'bail|required|max:1024',
+            'photo' => 'max:1024',
         ]);
 
         $positions = ['President', 'First level', 'Second level', 'Third level', 'Fourth level'];
@@ -112,10 +112,10 @@ class EmployeesCRUDController extends Controller
     {
         //validate name, photo, salary and employment date
         $validatedData = $request->validate([
-            'name' => 'bail|required|alpha|max:100',
+            'name' => 'bail|required|max:100',
             'employment' => 'bail|required|date_format:"Y-m-d"',
             'salary' => 'bail|required|integer|numeric',
-            'photo' => 'bail|required|max:1024',
+            'photo' => 'max:1024',
         ]);
 
         $positions = ['President', 'First level', 'Second level', 'Third level', 'Fourth level'];
