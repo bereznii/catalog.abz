@@ -64,11 +64,7 @@ class EmployeesCRUDController extends Controller
         
         $employee->save();
 
-        $employee = Employee::orderBy('id', 'desc')->get()->first();
-        $supervisor = Employee::where('id', $employee->parent)->select('name')->first();
-        $photo_path = Storage::url($employee->photo);
-        
-        return view('employees.read', compact('employee', 'supervisor', 'photo_path'));
+        return redirect()->route('employees.show', ['id' => $employee->id]);
     }
 
     /**
